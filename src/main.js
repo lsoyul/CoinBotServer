@@ -29,6 +29,14 @@ var getCoinPricesOptions = {
     }
 };
 
+var getHanRiverTemperOptions = {
+    url: 'http://hangang.dkserver.wo.tc',
+    method: "GET",
+    headers: {
+        'Content-type': 'application/json'
+    }
+}
+
 function postReqCallback(error, response, body) {
     console.log("POST DoorayBot callback!");
     if (!error) {
@@ -36,6 +44,16 @@ function postReqCallback(error, response, body) {
     }
     else {
       //console.log(JSON.parse(body));
+    }
+}
+
+function getRiverReqCallback(error, response, body){
+    console.log("GET Han river temperature Callback!");
+    if(!error){
+        var info = (JSON.parse(body));
+        console.log(info);
+
+        
     }
 }
 
@@ -63,6 +81,7 @@ function getReqCallback(error, response, body) {
       console.log(`${curPriceString}`);
 
       var postDoorayBotOptions = {
+        //url:"https://hook.dooray.com/services/1387695619080878080/2077237717894724234/Z23w-9UfQ9yZn3bQIYYltQ", //테스트
         url: "https://hook.dooray.com/services/1387695619080878080/2042404607776494474/IsYkDTyhQ2eoTc8mdrwOBw",
         headers: {
           "Content-type": "application/json"
@@ -74,7 +93,7 @@ function getReqCallback(error, response, body) {
             "attachments": [
                 {
                     "title":"Coin Market Price",
-                    "image": "https://i.imgur.com/yQTe1N5.jpg",
+                    "image": "https://i.imgur.com/AsFetvO.jpg",
                     "text": `<h5><font color="red">${curPriceString}</font></h5>`,
                     "color": "darkgreen"
                 }
@@ -193,7 +212,7 @@ function sleep(milliseconds) {
     }
   }
 
-var cronJob = new cron('* * */24 * * *', function(){
+var cronJob = new cron('00 00 12 * * *', function(){
 
     httpReq.get(getCoinPricesOptions, getReqCallback);
     // sleep(2000);
