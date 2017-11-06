@@ -8,17 +8,18 @@ var app = express();
 var httpReq = require('request');
 
 
-var coinArr = ["BTC", "ETH", "BCH", "XRP", "ETC", "LTC", "DASH", "XMR", "ZEC", "QTUM"];
+var coinArr = ["BTC(비트코인)", "ETH(이더리움)", "BCH(비트코인캐시)", "XRP(리플)", "ETC(이더리움클래식)", "LTC(라이트코인)", "DASH(대시)", "XMR(모네로)", "ZEC(제트캐시)", "QTUM(퀀텀)"];
 
+var curPriceString;
 
-var postDoorayBotOptions = {
-    url: 'https://postman-echo.com/post',
-    method: "POST",
-    headers: {
-      'Content-type': 'application/json'
-    },
-    body: '{ "username": "admin", "password": "fsdf"}'
-};
+// var postDoorayBotOptions = {
+//     url: 'https://hook.dooray.com/services/1387695619080878080/2077203703197801228/J2vP4EFWR5O_1qRjZ3Z4MA',
+//     method: "POST",
+//     headers: {
+//       'Content-type': 'application/json'
+//     },
+//     body: `{ "botName": "Coin Bot", "botIconImage": "http://blogpfthumb.phinf.naver.net/20151020_246/wantutopia_1445335384694u88Fg_JPEG/ori+-+%BA%B9%BB%E7%BA%BB.jpg","attachments": [{"title":"시세 알림","text": ${curPriceString},"color": "darkgreen"}]    }`
+// };
 
 var getCoinPricesOptions = {
     url: 'https://api.bithumb.com/public/ticker/all',
@@ -31,12 +32,10 @@ var getCoinPricesOptions = {
 function postReqCallback(error, response, body) {
     console.log("POST DoorayBot callback!");
     if (!error) {
-      var info = (JSON.parse(body));
-      console.log(info);
       console.log("status 200");
     }
     else {
-      console.log(JSON.parse(body));
+      //console.log(JSON.parse(body));
     }
 }
 
@@ -47,16 +46,61 @@ function getReqCallback(error, response, body) {
       console.log(info);
       console.log("status 200");
 
-      console.log(`${coinArr[0]} price : ${info.data.BTC.buy_price}`);
-      console.log(`${coinArr[1]} price : ${info.data.ETH.buy_price}`);
-      console.log(`${coinArr[2]} price : ${info.data.BCH.buy_price}`);
-      console.log(`${coinArr[3]} price : ${info.data.XRP.buy_price}`);
-      console.log(`${coinArr[4]} price : ${info.data.ETC.buy_price}`);
-      console.log(`${coinArr[5]} price : ${info.data.LTC.buy_price}`);
-      console.log(`${coinArr[6]} price : ${info.data.DASH.buy_price}`);
-      console.log(`${coinArr[7]} price : ${info.data.XMR.buy_price}`);
-      console.log(`${coinArr[8]} price : ${info.data.ZEC.buy_price}`);
-      console.log(`${coinArr[9]} price : ${info.data.QTUM.buy_price}`);
+      curPriceString = '';
+
+      curPriceString = 
+      `${coinArr[0]}  : ${info.data.BTC.buy_price}\n` +
+      `${coinArr[1]}  : ${info.data.ETH.buy_price}\n` +
+      `${coinArr[2]}  : ${info.data.BCH.buy_price}\n` +
+      `${coinArr[3]}  : ${info.data.XRP.buy_price}\n` +
+      `${coinArr[4]}  : ${info.data.ETC.buy_price}\n` +
+      `${coinArr[5]}  : ${info.data.LTC.buy_price}\n` +
+      `${coinArr[6]}  : ${info.data.DASH.buy_price}\n` +
+      `${coinArr[7]}  : ${info.data.XMR.buy_price}\n` +
+      `${coinArr[8]}  : ${info.data.ZEC.buy_price}\n` +
+      `${coinArr[9]}  : ${info.data.QTUM.buy_price}\n`;
+
+      console.log(`${curPriceString}`);
+
+      var postDoorayBotOptions = {
+        url: "https://hook.dooray.com/services/1387695619080878080/2077203703197801228/J2vP4EFWR5O_1qRjZ3Z4MA",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: { 
+            "title" : "hi",
+            "botName": "Coin Bot v1.0", 
+            "botIconImage": "http://blogpfthumb.phinf.naver.net/20151020_246/wantutopia_1445335384694u88Fg_JPEG/ori+-+%BA%B9%BB%E7%BA%BB.jpg",
+            "attachments": [
+                {
+                    "title":"Coin Market Price",
+                    "text": `<h5><font color="red">${curPriceString}</font></h5>`,
+                    "color": "darkgreen"
+                }
+            ]    
+        },
+        json:true
+    };
+
+      httpReq.post(postDoorayBotOptions, postReqCallback);
+    //   httpReq.post({
+    //     url: "https://hook.dooray.com/services/1387695619080878080/2077203703197801228/J2vP4EFWR5O_1qRjZ3Z4MA",
+    //     headers: {
+    //       "Content-type": "application/json"
+    //     },
+    //     body: { 
+    //         "botName": "Coin Bot", 
+    //         "botIconImage": "http://blogpfthumb.phinf.naver.net/20151020_246/wantutopia_1445335384694u88Fg_JPEG/ori+-+%BA%B9%BB%E7%BA%BB.jpg",
+    //         "attachments": [
+    //             {
+    //                 "title":"시세 알림",
+    //                 "text": `${curPriceString}`,
+    //                 "color": "darkgreen"
+    //             }
+    //         ]    
+    //     },
+    //     json:true
+    // }, postReqCallback);
       
     }
     else {
@@ -139,8 +183,20 @@ app.get('/gettest', function(req, res){
 //     }
 // });
 
-var cronJob = new cron('*/30 * * * * *', function(){
-    
+function sleep(milliseconds) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+      if ((new Date().getTime() - start) > milliseconds){
+        break;
+      }
+    }
+  }
+
+var cronJob = new cron('* * */24 * * *', function(){
+
+    httpReq.get(getCoinPricesOptions, getReqCallback);
+    // sleep(2000);
+    //httpReq.post(postDoorayBotOptions, postReqCallback);
     console.log('yeah!');
 
 }, null, true, timeZone);
