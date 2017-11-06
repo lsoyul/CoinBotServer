@@ -63,17 +63,18 @@ function getReqCallback(error, response, body) {
       console.log(`${curPriceString}`);
 
       var postDoorayBotOptions = {
-        url: "https://hook.dooray.com/services/1387695619080878080/2077203703197801228/J2vP4EFWR5O_1qRjZ3Z4MA",
+        url: "https://hook.dooray.com/services/1387695619080878080/2042404607776494474/IsYkDTyhQ2eoTc8mdrwOBw",
         headers: {
           "Content-type": "application/json"
         },
         body: { 
             "title" : "hi",
-            "botName": "Coin Bot v1.0", 
-            "botIconImage": "http://blogpfthumb.phinf.naver.net/20151020_246/wantutopia_1445335384694u88Fg_JPEG/ori+-+%BA%B9%BB%E7%BA%BB.jpg",
+            "botName": "Coin Dog v1.0", 
+            "botIconImage": "https://i.imgur.com/pne02Pe.png",
             "attachments": [
                 {
                     "title":"Coin Market Price",
+                    "image": "https://i.imgur.com/yQTe1N5.jpg",
                     "text": `<h5><font color="red">${curPriceString}</font></h5>`,
                     "color": "darkgreen"
                 }
