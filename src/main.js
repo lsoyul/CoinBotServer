@@ -103,24 +103,6 @@ function getReqCallback(error, response, body) {
     };
 
       httpReq.post(postDoorayBotOptions, postReqCallback);
-    //   httpReq.post({
-    //     url: "https://hook.dooray.com/services/1387695619080878080/2077203703197801228/J2vP4EFWR5O_1qRjZ3Z4MA",
-    //     headers: {
-    //       "Content-type": "application/json"
-    //     },
-    //     body: { 
-    //         "botName": "Coin Bot", 
-    //         "botIconImage": "http://blogpfthumb.phinf.naver.net/20151020_246/wantutopia_1445335384694u88Fg_JPEG/ori+-+%BA%B9%BB%E7%BA%BB.jpg",
-    //         "attachments": [
-    //             {
-    //                 "title":"시세 알림",
-    //                 "text": `${curPriceString}`,
-    //                 "color": "darkgreen"
-    //             }
-    //         ]    
-    //     },
-    //     json:true
-    // }, postReqCallback);
       
     }
     else {
@@ -137,26 +119,22 @@ app.get('/', function(req, res) {
     res.send('This is home page!');
 });
 
-// app.get('/login', function(req, res){
-//     res.send('Login page');
-// });
 
 app.get('/getCurrency', function(req, res){
 
     var target = req.query.coin;
 
-    xhr.open('GET', `https://api.bithumb.com/public/ticker/${target}`, true);
-    xhr.send();
+    httpReq.get(`https://api.bithumb.com/public/ticker/${target}`, processRequest);
      
-    xhr.onreadystatechange = processRequest;
 
-    function processRequest(e){
-        if(xhr.readyState == 4 && xhr.status == 200)
-        {
-            var response = JSON.parse(xhr.responseText);
-            
-            res.send(`${target} price : ${response.data.buy_price}`);
+    function processRequest(error, response, body){
+        if(!error){
+            var info = (JSON.parse(body));
+            console.log(info);
+    
+            res.send(`${target} price : ${info.data.buy_price}`);
         }
+            
     }
     
 });
@@ -173,35 +151,6 @@ app.get('/gettest', function(req, res){
     res.send();
 });
 
-// app.get('/getCurrencyAll', function(req, res){
-    
-    
-//     xhr.open('GET', `https://api.bithumb.com/public/ticker/all`, true);
-//     xhr.send();
-         
-    
-//     xhr.onreadystatechange = processRequest;
-    
-//     function processRequest(e){
-//         if(xhr.readyState == 4 && xhr.status == 200)
-//         {
-//             var response = JSON.parse(xhr.responseText);
-                
-//             res.write(`${coinArr[0]} price : ${response.data.BTC.buy_price}\n`);
-//             res.write(`${coinArr[1]} price : ${response.data.ETH.buy_price}\n`);
-//             res.write(`${coinArr[2]} price : ${response.data.BCH.buy_price}\n`);
-//             res.write(`${coinArr[3]} price : ${response.data.XRP.buy_price}\n`);
-//             res.write(`${coinArr[4]} price : ${response.data.ETC.buy_price}\n`);
-//             res.write(`${coinArr[5]} price : ${response.data.LTC.buy_price}\n`);
-//             res.write(`${coinArr[6]} price : ${response.data.DASH.buy_price}\n`);
-//             res.write(`${coinArr[7]} price : ${response.data.XMR.buy_price}\n`);
-//             res.write(`${coinArr[8]} price : ${response.data.ZEC.buy_price}\n`);
-//             res.write(`${coinArr[9]} price : ${response.data.QTUM.buy_price}\n`);
-
-//             res.end();
-//         }
-//     }
-// });
 
 function sleep(milliseconds) {
     var start = new Date().getTime();
@@ -212,11 +161,11 @@ function sleep(milliseconds) {
     }
   }
 
-var cronJob = new cron('00 00 12 * * *', function(){
+//var cronJob = new cron('*/2 * * * * *', function(){
+var cronJob = new cron('00 00 */12 * * *', function(){
 
     httpReq.get(getCoinPricesOptions, getReqCallback);
-    // sleep(2000);
-    //httpReq.post(postDoorayBotOptions, postReqCallback);
+    
     console.log('yeah!');
 
 }, null, true, timeZone);
