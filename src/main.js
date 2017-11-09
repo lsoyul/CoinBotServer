@@ -12,6 +12,8 @@ var coinArr = ["BTC(비트코인)", "ETH(이더리움)", "BCH(비트코인캐시
 
 var curPriceString;
 
+const appVersion = "1.1";
+
 // var postDoorayBotOptions = {
 //     url: 'https://hook.dooray.com/services/1387695619080878080/2077203703197801228/J2vP4EFWR5O_1qRjZ3Z4MA',
 //     method: "POST",
@@ -88,7 +90,7 @@ function getReqCallback(error, response, body) {
         },
         body: { 
             "title" : "hi",
-            "botName": "Coin Dog v1.0", 
+            "botName": `콜라비어 v${appVersion}`, 
             "botIconImage": "https://i.imgur.com/pne02Pe.png",
             "attachments": [
                 {
@@ -162,10 +164,10 @@ function sleep(milliseconds) {
   }
 
 //var cronJob = new cron('*/2 * * * * *', function(){
-var cronJob = new cron('00 00 */12 * * *', function(){
+var cronJob = new cron('00 00 12 * * *', function(){
 
     httpReq.get(getCoinPricesOptions, getReqCallback);
-    
+
     console.log('yeah!');
 
 }, null, true, timeZone);
