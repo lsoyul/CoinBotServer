@@ -90,12 +90,12 @@ function getReqCallback(error, response, body) {
         },
         body: { 
             "title" : "hi",
-            "botName": `콜라비어 v${appVersion}`, 
+            "botName": `콜라비 v${appVersion}`, 
             "botIconImage": "https://i.imgur.com/pne02Pe.png",
             "attachments": [
                 {
                     "title":"Coin Market Price",
-                    "image": "https://i.imgur.com/AsFetvO.jpg",
+                    "image": "https://i.imgur.com/1qwqR6f.jpg",
                     "text": `<h5><font color="red">${curPriceString}</font></h5>`,
                     "color": "darkgreen"
                 }
@@ -163,7 +163,7 @@ function sleep(milliseconds) {
     }
   }
 
-//var cronJob = new cron('*/2 * * * * *', function(){
+// var cronJob = new cron('*/2 * * * * *', function(){
 var cronJob = new cron('00 00 12 * * *', function(){
 
     httpReq.get(getCoinPricesOptions, getReqCallback);
